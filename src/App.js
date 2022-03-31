@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import twitterLogo from './assets/twitter-logo.svg';
 import myEpicNft from './utils/MyEpicNFT.json';
 import './styles/App.css';
+import useAccount from "./hooks/useAccount";
 
 // Constantsを宣言する: constとは値書き換えを禁止した変数を宣言する方法です。
 const TWITTER_HANDLE = 'gentamura84';
@@ -12,7 +13,7 @@ const OPENSEA_LINK = '';
 const CONTRACT_ADDRESS = '0x694DD1639AD138A79e0A1271561878f8F415c6b0';
 
 const App = () => {
-  const [currentAccount, setCurrentAccount] = useState('');
+  const [currentAccount, setCurrentAccount] = useAccount();
   const [mintMaxCount, setMintMaxCount] = useState(0);
   const [mintCount, setMintCount] = useState(0);
 
@@ -30,7 +31,7 @@ const App = () => {
     setMintCount(mintCountAsBigNumber.toNumber());
   };
 
-  const setupEventListener = async () => {
+  const setupEventListener = useCallback(async () => {
     try {
       const { ethereum } = window;
 
@@ -61,30 +62,7 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const checkIfWalletIsConnected = async () => {
-    const { ethereum } = window;
-
-    if (!ethereum) {
-      console.log("Make sure you have MetaMask!");
-      return;
-    } else {
-      console.log("We have the ethereum object", ethereum);
-    }
-
-    const accounts = await ethereum.request({ method: 'eth_accounts' });
-
-    if (accounts.length !== 0) {
-      const account = accounts[0];
-      console.log("Found an authorized account:", account);
-      setCurrentAccount(account)
-
-      setupEventListener();
-    } else {
-      console.log("No authorized account found")
-    }
-  };
+  }, []);
 
   const connectWallet = async () => {
     try {
@@ -129,8 +107,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    checkIfWalletIsConnected();
-  }, []);
+    if (currentAccount) {
+      setupEventListener();
+
+      console.log("Found an authorized account:", currentAccount);
+    } else {
+      console.log("No authorized account found")
+    }
+  }, [currentAccount, setupEventListener]);
 
   return (
     <div className="App">
