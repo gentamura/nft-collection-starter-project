@@ -5,15 +5,14 @@ import './styles/App.css';
 
 const App = () => {
   const { currentAccount, signIn } = useAccount();
-  const { checkContract, TotalCount, MintButton } =
-    useContract();
+  const { initContract, Contract } = useContract();
 
   console.log('currentAccount: ', currentAccount);
 
   const connectWallet = async () => {
     try {
       await signIn();
-      await checkContract();
+      await initContract();
     } catch (error) {
       console.log(error);
     }
@@ -34,10 +33,7 @@ const App = () => {
               Connect to Wallet
             </button>
           ) : (
-            <>
-              <TotalCount />
-              <MintButton />
-            </>
+            <Contract />
           )}
         </div>
 
