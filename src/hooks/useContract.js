@@ -12,15 +12,20 @@ const useContract = () => {
   const [mintMaxCount, setMintMaxCount] = useState(0);
   const [mintCount, setMintCount] = useState(0);
   const [isValidNetwork, setIsValidNetwork] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
 
   const askContractToMintNft = async () => {
     console.log('Going to pop wallet now to pay gas...');
+
+    setIsMinting(true);
 
     let nftTxn = await contract.makeAnEpicNFT();
 
     console.log('Mining...please wait.');
 
     await nftTxn.wait();
+
+    setIsMinting(false);
 
     console.log(
       `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
@@ -95,13 +100,22 @@ const useContract = () => {
   );
 
   const MintButton = () => (
-    <button
-      onClick={askContractToMintNft}
-      className="cta-button connect-wallet-button"
-      disabled={mintCount === mintMaxCount}
-    >
-      Mint NFT
-    </button>
+    isMinting ? (
+      <button
+        className="cta-button connect-wallet-button opacity-50"
+        disabled
+      >
+        Minting...
+      </button>
+    ) : (
+      <button
+        onClick={askContractToMintNft}
+        className="cta-button connect-wallet-button"
+        disabled={mintCount === mintMaxCount}
+      >
+        Mint NFT
+      </button>
+    )
   );
 
   const Contract = () => (
