@@ -75,13 +75,21 @@ const useContract = () => {
     </div>
   );
 
-  const isMintDisabled = mintCount === mintMaxCount;
+  const MintButton = () => (
+    <button
+      onClick={askContractToMintNft}
+      className="cta-button connect-wallet-button"
+      disabled={mintCount === mintMaxCount}
+    >
+      Mint NFT
+    </button>
+  );
 
   useEffect(() => {
     if (currentAccount) checkContract();
   }, [currentAccount, checkContract]);
 
-  return { checkContract, TotalCount, isMintDisabled, askContractToMintNft };
+  return { checkContract, TotalCount, MintButton };
 };
 
 export default useContract;
