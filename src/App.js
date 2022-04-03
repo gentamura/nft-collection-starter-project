@@ -7,8 +7,6 @@ const App = () => {
   const { currentAccount, signIn } = useAccount();
   const { initContract, Contract } = useContract();
 
-  console.log('currentAccount: ', currentAccount);
-
   const connectWallet = async () => {
     try {
       await signIn();

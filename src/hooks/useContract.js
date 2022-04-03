@@ -45,7 +45,7 @@ const useContract = () => {
   const checkNetwork = async (ethereum) => {
     const chainId = await ethereum.request({ method: 'eth_chainId' });
 
-    setIsValidNetwork(chainId === RINKEBY_CHAIN_ID)
+    setIsValidNetwork(chainId === RINKEBY_CHAIN_ID);
   };
 
   const checkContract = useCallback(async (ethereum) => {
@@ -84,7 +84,7 @@ const useContract = () => {
         console.log("Ethereum object doesn't exist!");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }, [isValidNetwork, checkContract]);
 
@@ -92,44 +92,49 @@ const useContract = () => {
     if (currentAccount) initContract();
   }, [currentAccount, initContract]);
 
-
   const TotalCount = () => (
-    <div className="sub-text">
+    <div className="text-white text-xl my-4">
       これまでに作成された {mintCount}/{mintMaxCount} NFT
     </div>
   );
 
-  const MintButton = () => (
+  const MintButton = () =>
     isMinting ? (
-      <button
-        className="cta-button connect-wallet-button opacity-50"
-        disabled
-      >
+      <button className="cta-button connect-wallet-button mint-button opacity-50" disabled>
         Minting...
       </button>
     ) : (
       <button
         onClick={askContractToMintNft}
-        className="cta-button connect-wallet-button"
+        className="cta-button mint-button"
         disabled={mintCount === mintMaxCount}
       >
         Mint NFT
       </button>
-    )
-  );
+    );
 
-  const Contract = () => (
+  const Contract = () =>
     isValidNetwork ? (
-      <>
-        <TotalCount />
-        <MintButton />
-      </>
+      <div className="space-y-4">
+        <div>
+          <TotalCount />
+          <MintButton />
+        </div>
+
+        <a
+          className="inline-flex justify-center items-center cta-button opensea-button"
+          href="https://testnets.opensea.io/collection/squarenft-2rimqydoso"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Opensea でコレクションを表示
+        </a>
+      </div>
     ) : (
       <div className="sub-text">
         You are not connected to the Rinkeby Test Network!
       </div>
-    )
-  );
+    );
 
   return { initContract, Contract };
 };
